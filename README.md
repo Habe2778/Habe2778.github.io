@@ -3,9 +3,7 @@
 <head>
 
   
-  h1 {
-  text-align: center;
-}
+
 
  </head> 
  
