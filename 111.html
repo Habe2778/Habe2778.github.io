@@ -1,16 +1,148 @@
-<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Habe.Stream - Your Streaming Service</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #111; color: #fff; margin: 0; padding: 0; height: 100%; }
+        header { background-color: #000; padding: 10px 20px; text-align: center; }
+        header h1 { margin: 0; font-size: 2.5rem; }
+        nav { background-color: #222; padding: 10px; display: flex; justify-content: center; }
+        nav a { color: #fff; text-decoration: none; padding: 10px 20px; margin: 0 15px; font-size: 1.2rem; }
+        nav a:hover { background-color: #444; }
+        .content { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; margin-bottom: 60px; flex-grow: 1; }
+        .video-card { background-color: #333; padding: 10px; border-radius: 8px; text-align: center; }
+        .video-card img { width: 100%; border-radius: 8px; }
+        .fullscreen-video { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); justify-content: center; align-items: center; }
+        .fullscreen-video video { width: 100%; height: 100%; object-fit: cover; }
+        .back-button { display: none; position: absolute; top: 20px; left: 20px; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 10px 20px; font-size: 1.2rem; border: none; border-radius: 5px; cursor: pointer; }
+        .footer { background-color: #111; padding: 20px; text-align: center; color: #bbb; display: none; position: absolute; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Habe.Stream</h1>
+        <p>Your Favorite Movies and TV Shows</p>
+    </header>
+    <nav>
+        <a href="#home">Home</a><a href="#movies">Movies</a><a href="#tv-shows">TV Shows</a><a href="#contact">Contact</a>
+    </nav>
+    <div class="content">
+        <div class="video-card">
+            <img src="Minecraftmovieposter.jpg" alt="Minecraft The Movie">
+            <h3>Minecraft The Movie</h3>
+            <a href="#" onclick="playVideo('Minecraft.mp4')">Watch Now</a>
+        </div>
+        <div class="video-card">
+            <img src="movie2.jpg" alt="Movie Title 2">
+            <h3>Movie Title 2</h3>
+            <a href="#" onclick="playVideo('movie2.mp4')">Watch Now</a>
+        </div>
+        <div class="video-card">
+            <img src="Shrek.jpg" alt="Shrek">
+            <h3>Shrek</h3>
+            <a href="#" onclick="playVideo('Shrek.mp4')">Watch Now</a>
+        </div>
+        <div class="video-card">
+            <img src="movie4.jpg" alt="Movie Title 4">
+            <h3>Movie Title 4</h3>
+            <a href="#" onclick="playVideo('movie4.mp4')">Watch Now</a>
+        </div>
+        <div class="video-card">
+            <img src="movie5.jpg" alt="Movie Title 5">
+            <h3>Movie Title 5</h3>
+            <a href="#" onclick="playVideo('movie5.mp4')">Watch Now</a>
+        </div>
+    </div>
+    <div class="fullscreen-video" id="fullscreen-video">
+        <video controls id="fullscreen-player">
+            <source id="video-source" src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <button class="back-button" id="back-button" onclick="goBack()">Back</button>
+    <div class="footer" id="footer">
+        <p>&copy; 2024 Habe.Stream, All Rights Reserved</p>
+        <p>Privacy Policy | Terms of Service</p>
+    </div>
 
-  
+    <script>
+        let idleTimer; // To track idle state
+        let videoElement = document.getElementById('fullscreen-player');
+        let videoSource = document.getElementById('video-source');
+        
+        // Function to handle playing the video
+        function playVideo(videoId) {
+            // Hide the content section and show the fullscreen video
+            document.querySelector('.content').style.display = 'none';
+            document.getElementById('fullscreen-video').style.display = 'flex';
 
- </head> 
- 
-  <body>
-  
-  <h1><b>MARTIN</b></h1>
-  <p>Welcome martin </p>
+            // Display the back button
+            document.getElementById('back-button').style.display = 'block';
 
+            // Set the video source dynamically based on the selected video
+            videoSource.src = videoId;
+            videoElement.load();
+            videoElement.play();
+        }
+
+        // Back button function (handles both stopping the video and going back to the main menu)
+        function goBack() {
+            // Stop the video and reset it to the beginning
+            videoElement.pause();
+            videoElement.currentTime = 0;
+
+            // Hide the fullscreen video and show the content section again
+            document.getElementById('fullscreen-video').style.display = 'none';
+            document.querySelector('.content').style.display = 'grid';
+
+            // Hide the back button
+            document.getElementById('back-button').style.display = 'none';
+        }
+
+        // Detect mouse movement to show the back button
+        document.addEventListener('mousemove', function() {
+            // Reset the idle timer
+            clearTimeout(idleTimer);
+
+            // Show the back button when the cursor moves and a video is playing
+            if (document.getElementById('fullscreen-video').style.display === 'flex') {
+                document.getElementById('back-button').style.display = 'block';
+            }
+
+            // Hide the back button after 3 seconds of inactivity
+            idleTimer = setTimeout(function() {
+                if (document.getElementById('fullscreen-video').style.display === 'flex') {
+                    document.getElementById('back-button').style.display = 'none';
+                }
+            }, 3000);
+        });
+
+        // Detect scroll position to reveal the footer at the bottom of the page
+        window.onscroll = function() {
+            const footer = document.getElementById('footer');
+            if (document.documentElement.scrollHeight === document.documentElement.scrollTop + window.innerHeight) {
+                footer.style.display = 'block'; // Show footer when at the bottom
+            } else {
+                footer.style.display = 'none'; // Hide footer when not at the bottom
+            }
+        };
+
+        // Disable right-click, F12, Ctrl+Shift+I, and Ctrl+U, and detect DevTools
+        document.addEventListener("contextmenu", e => e.preventDefault());
+        document.onkeydown = e => {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73) || (e.ctrlKey && e.keyCode === 85)) {
+                e.preventDefault();
+                window.location.href = 'about:blank'; // Redirect to blank page
+            }
+        };
+
+        let devToolsOpen = false;
+        setInterval(() => {
+            if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) devToolsOpen = true;
+            if (devToolsOpen) window.location.href = 'about:blank'; // Redirect to blank page
+        }, 1000);
+    </script>
 </body>
-
 </html>
